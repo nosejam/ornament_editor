@@ -71,19 +71,40 @@
         #canvas-panel {
             width: 50%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        #background-canvas, #ornament-canvas {
+        #canvas-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        #background-canvas {
+            display: block;
+            max-width: 90vw;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+        }
+        #ornament-canvas {
             position: absolute;
+            top: 0;
+            left: 0;
+            max-width: 90vw;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
         }
         #action-buttons {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin-top: 20px;
         }
         .action-btn {
             padding: 10px 20px;
@@ -97,6 +118,26 @@
         }
         .action-btn:hover {
             background-color: #e68900;
+        }
+        
+        /* Mobile responsive layout */
+        @media (max-width: 1000px) {
+            body {
+                flex-direction: column;
+            }
+            #editor-panel {
+                width: 100%;
+            }
+            #canvas-panel {
+                width: 100%;
+                padding-bottom: 20px;
+            }
+            #canvas-container {
+                margin: 20px auto;
+            }
+            #action-buttons {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -116,11 +157,14 @@
     </div>
     
     <div id="canvas-panel">
-        <canvas id="background-canvas"></canvas>
-        <canvas id="ornament-canvas"></canvas>
+        <div id="canvas-container">
+            <canvas id="background-canvas"></canvas>
+            <canvas id="ornament-canvas"></canvas>
+        </div>
         <div id="action-buttons">
-            <button class="action-btn" id="download-btn">Download</button>
-            <button class="action-btn" id="print-btn">Print</button>
+            <button class="action-btn" id="download-code-btn">Download Code</button>
+            <button class="action-btn" id="download-btn">Download Image</button>
+            <button class="action-btn" id="print-btn">Print Image</button>
         </div>
     </div>
     
@@ -147,7 +191,7 @@
                 autoCloseBrackets: true
             });
             
-            // Set canvas size to fixed 500px
+            // Set canvas size to fixed 500px (will be scaled with CSS)
             const circleSize = 500;
             bgCanvas.width = circleSize;
             bgCanvas.height = 1.5 * circleSize;
@@ -392,7 +436,18 @@ ctx.fill();`
                 }
             });
             
-            // Download button handler
+            // Download code button handler
+            document.getElementById('download-code-btn').addEventListener('click', () => {
+                const code = editor.getValue();
+                const blob = new Blob([code], { type: 'text/javascript' });
+                const link = document.createElement('a');
+                link.download = 'ornament-code.js';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                URL.revokeObjectURL(link.href);
+            });
+            
+            // Download image button handler
             document.getElementById('download-btn').addEventListener('click', () => {
                 // Create a temporary canvas to combine both layers
                 const tempCanvas = document.createElement('canvas');
@@ -417,7 +472,7 @@ ctx.fill();`
                 link.click();
             });
             
-            // Print button handler
+            // Print image button handler
             document.getElementById('print-btn').addEventListener('click', () => {
                 // Create a temporary canvas to combine both layers
                 const tempCanvas = document.createElement('canvas');
