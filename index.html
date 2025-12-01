@@ -119,6 +119,84 @@
         .action-btn:hover {
             background-color: #e68900;
         }
+        #instructions-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #9C27B0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 100;
+        }
+        #instructions-btn:hover {
+            background-color: #7B1FA2;
+        }
+        #instructions-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        #instructions-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        #instructions-content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        #instructions-content h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        #instructions-content code {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        #instructions-content pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        #close-instructions {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        #close-instructions:hover {
+            color: #333;
+        }
+        .coord-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
         
         /* Mobile responsive layout */
         @media (max-width: 1000px) {
@@ -142,6 +220,90 @@
     </style>
 </head>
 <body>
+    <button id="instructions-btn">Instructions</button>
+    
+    <div id="instructions-modal">
+        <div id="instructions-content">
+            <button id="close-instructions">&times;</button>
+            <h2>🎨 Ornament Drawing Instructions</h2>
+            
+            <div class="coord-info">
+                <h3>📍 Coordinate System</h3>
+                <ul>
+                    <li><strong>Center:</strong> (0, 0) is the center of the ornament</li>
+                    <li><strong>Horizontal:</strong> Negative is LEFT, Positive is RIGHT</li>
+                    <li><strong>Vertical:</strong> Negative is UP, Positive is DOWN</li>
+                    <li><strong>Circle size:</strong> Radius is <code>242</code> pixels (diameter is <code>484</code> pixels)</li>
+                </ul>
+            </div>
+            
+            <h3>🎯 Drawing Commands</h3>
+            
+            <h4>Drawing Circles (arc)</h4>
+            <pre><code>ctx.beginPath();
+ctx.arc(x, y, radius, startAngle, endAngle);
+ctx.fill();  // or ctx.stroke();</code></pre>
+            <p><strong>Example:</strong> Circle at center with radius 50</p>
+            <pre><code>ctx.beginPath();
+ctx.arc(0, 0, 50, 0, Math.PI * 2);
+ctx.fillStyle = '#ff0000';
+ctx.fill();</code></pre>
+            
+            <h4>Drawing Rectangles (rect)</h4>
+            <pre><code>ctx.beginPath();
+ctx.rect(x, y, width, height);
+ctx.fill();  // or ctx.stroke();</code></pre>
+            <p><strong>Example:</strong> 100x100 rectangle centered at origin</p>
+            <pre><code>ctx.beginPath();
+ctx.rect(-50, -50, 100, 100);
+ctx.fillStyle = '#00ff00';
+ctx.fill();</code></pre>
+            
+            <h4>Drawing Lines (moveTo & lineTo)</h4>
+            <pre><code>ctx.beginPath();
+ctx.moveTo(x1, y1);  // Move to starting point
+ctx.lineTo(x2, y2);  // Draw line to this point
+ctx.lineTo(x3, y3);  // Continue drawing
+ctx.stroke();</code></pre>
+            <p><strong>Example:</strong> Draw a triangle</p>
+            <pre><code>ctx.beginPath();
+ctx.moveTo(0, -50);
+ctx.lineTo(-50, 50);
+ctx.lineTo(50, 50);
+ctx.closePath();
+ctx.fillStyle = '#0000ff';
+ctx.fill();</code></pre>
+            
+            <h4>Colors</h4>
+            <pre><code>ctx.fillStyle = '#ff0000';   // Red fill
+ctx.strokeStyle = '#0000ff'; // Blue outline
+ctx.lineWidth = 5;           // Line thickness</code></pre>
+            
+            <h4>Gradients</h4>
+            <pre><code>// Linear gradient
+const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+gradient.addColorStop(0, '#ff0000');
+gradient.addColorStop(1, '#0000ff');
+ctx.fillStyle = gradient;
+
+// Radial gradient
+const gradient = ctx.createRadialGradient(x1, y1, r1, x2, y2, r2);
+gradient.addColorStop(0, '#ffffff');
+gradient.addColorStop(1, '#000000');
+ctx.fillStyle = gradient;</code></pre>
+            
+            <h3>💡 Tips</h3>
+            <ul>
+                <li>Always use <code>ctx.beginPath()</code> before starting a new shape</li>
+                <li>Use <code>ctx.fill()</code> to fill a shape with color</li>
+                <li>Use <code>ctx.stroke()</code> to draw just the outline</li>
+                <li>Set colors BEFORE calling fill() or stroke()</li>
+                <li>Angles are in radians: <code>Math.PI * 2</code> = full circle, <code>Math.PI</code> = half circle</li>
+                <li>Press <strong>Ctrl+Enter</strong> to quickly update your ornament</li>
+            </ul>
+        </div>
+    </div>
+    
     <div id="editor-panel">
         <h2>Edit Ornament Design</h2>
         <div id="code-editor"></div>
@@ -202,42 +364,46 @@
             const centerY = circleSize * 0.75;
             const radius = circleSize / 2 - 8;
             
-            // Example designs
+            // ============================================================
+            // EXAMPLES SECTION - Easy to add/remove/edit examples
+            // ============================================================
+            // Note: Coordinates are relative to center (0,0)
+            // Positive X is right, Positive Y is down
+            // radius = 242 (size of the ornament circle)
+            
             const examples = {
-                smiley: `// Draw yellow background
+                'Smiley Face': `// Draw yellow background
 ctx.beginPath();
-ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+ctx.arc(0, 0, radius, 0, Math.PI * 2);
 ctx.fillStyle = '#ffff00';
 ctx.fill();
 
 // Left eye
 ctx.beginPath();
-ctx.arc(centerX - 70, centerY - 60, 10, 0, Math.PI * 2);
+ctx.arc(-70, -60, 10, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
 // Right eye
 ctx.beginPath();
-ctx.arc(centerX + 70, centerY - 60, 10, 0, Math.PI * 2);
+ctx.arc(70, -60, 10, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
 // Smile
 ctx.beginPath();
-ctx.arc(centerX, centerY - 20, 170, Math.PI/6, 5*Math.PI/6);
+ctx.arc(0, -20, 170, Math.PI/6, 5*Math.PI/6);
 ctx.strokeStyle = '#000000';
 ctx.lineWidth = 8;
 ctx.stroke();`,
-                
-                star: `// Draw dark blue background
+
+                'Star': `// Draw dark blue background
 ctx.beginPath();
-ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+ctx.arc(0, 0, radius, 0, Math.PI * 2);
 ctx.fillStyle = '#000080';
 ctx.fill();
 
 // Draw yellow five-pointed star
-ctx.save();
-ctx.translate(centerX, centerY);
 ctx.beginPath();
 const starRadius = 125;
 for (let i = 0; i < 5; i++) {
@@ -249,18 +415,17 @@ for (let i = 0; i < 5; i++) {
 }
 ctx.closePath();
 ctx.fillStyle = '#ffff00';
-ctx.fill();
-ctx.restore();`,
-                
-                snowman: `// Draw light blue background
+ctx.fill();`,
+
+                'Snowman': `// Draw light blue background
 ctx.beginPath();
-ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+ctx.arc(0, 0, radius, 0, Math.PI * 2);
 ctx.fillStyle = '#87ceeb';
 ctx.fill();
 
 // Ground
 ctx.beginPath();
-ctx.rect(centerX - 300, centerY + 50, 600, 300)
+ctx.rect(-300, 50, 600, 300);
 ctx.fillStyle = '#ffffff';
 ctx.fill();
 ctx.strokeStyle = '#000000';
@@ -269,7 +434,7 @@ ctx.stroke();
 
 // Bottom circle (largest)
 ctx.beginPath();
-ctx.arc(centerX, centerY + 110 - 25 - 10, 60, 0, Math.PI * 2);
+ctx.arc(0, 75, 60, 0, Math.PI * 2);
 ctx.fillStyle = '#ffffff';
 ctx.fill();
 ctx.strokeStyle = '#000000';
@@ -278,7 +443,7 @@ ctx.stroke();
 
 // Middle circle
 ctx.beginPath();
-ctx.arc(centerX, centerY - 25, 50, 0, Math.PI * 2);
+ctx.arc(0, -25, 50, 0, Math.PI * 2);
 ctx.fillStyle = '#ffffff';
 ctx.fill();
 ctx.strokeStyle = '#000000';
@@ -287,69 +452,73 @@ ctx.stroke();
 
 // Top circle (head)
 ctx.beginPath();
-ctx.arc(centerX, centerY - 90 - 25 + 10, 40, 0, Math.PI * 2);
+ctx.arc(0, -105, 40, 0, Math.PI * 2);
 ctx.fillStyle = '#ffffff';
 ctx.fill();
 ctx.strokeStyle = '#000000';
 ctx.lineWidth = 2;
 ctx.stroke();
 
-// Eyes on top circle
+// Eyes
 ctx.beginPath();
-ctx.arc(centerX - 15, centerY - 90 - 25 - 5, 3, 0, Math.PI * 2);
+ctx.arc(-15, -110, 3, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
 ctx.beginPath();
-ctx.arc(centerX + 15, centerY - 90 - 25 - 5, 3, 0, Math.PI * 2);
+ctx.arc(15, -110, 3, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
-// Smile on top circle
+// Smile
 ctx.beginPath();
-ctx.arc(centerX, centerY - 90 - 25 + 10, 20, 0, Math.PI);
+ctx.arc(0, -105, 20, 0, Math.PI);
 ctx.strokeStyle = '#000000';
 ctx.lineWidth = 2;
 ctx.stroke();
 
-// Three buttons on middle circle
+// Buttons on middle circle
 ctx.beginPath();
-ctx.arc(centerX, centerY - 41.67, 3, 0, Math.PI * 2);
+ctx.arc(0, -41.67, 3, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
 ctx.beginPath();
-ctx.arc(centerX, centerY - 25, 3, 0, Math.PI * 2);
+ctx.arc(0, -25, 3, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();
 
 ctx.beginPath();
-ctx.arc(centerX, centerY - 8.33, 3, 0, Math.PI * 2);
+ctx.arc(0, -8.33, 3, 0, Math.PI * 2);
 ctx.fillStyle = '#000000';
 ctx.fill();`,
-                
-                gradient: `// Create radial gradient from top-right to center
-// Parameters: x1, y1, r1, x2, y2, r2
-// Start: top-right area, small radius
-// End: center, large radius to cover ornament
+
+                'Red Gradient': `// Create radial gradient from top-right to center
 const gradient = ctx.createRadialGradient(
-    centerX + 100, centerY - 100, 20,  // Start point (top-right)
-    centerX, centerY, 300               // End point (covers ornament)
+    100, -100, 20,   // Start: top-right, small radius
+    0, 0, 300        // End: center, large radius
 );
 
-// Add color stops (0 = start, 1 = end)
-gradient.addColorStop(0, '#ffffff');    // White at top-right
-gradient.addColorStop(1, '#8b0000');    // Dark red at edges
+// Add color stops
+gradient.addColorStop(0, '#ffffff');  // White at top-right
+gradient.addColorStop(1, '#8b0000');  // Dark red at edges
 
 // Fill the ornament circle with gradient
 ctx.beginPath();
-ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+ctx.arc(0, 0, radius, 0, Math.PI * 2);
 ctx.fillStyle = gradient;
 ctx.fill();`
             };
             
+            // ============================================================
+            // END EXAMPLES SECTION
+            // ============================================================
+            
+            // Get example names for buttons
+            const exampleNames = Object.keys(examples);
+            
             // Default code
-            editor.setValue(examples.smiley);
+            editor.setValue(examples[exampleNames[0]]);
             
             // Draw ornament frame
             function drawOrnamentFrame() {
@@ -400,6 +569,9 @@ ctx.fill();`
                 bgCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
                 bgCtx.clip();
                 
+                // Translate origin to center of ornament (0,0 is now the center!)
+                bgCtx.translate(centerX, centerY);
+                
                 const ctx = bgCtx;
                 try {
                     eval(editor.getValue());
@@ -421,9 +593,9 @@ ctx.fill();`
             });
             
             // Example button handlers
-            document.querySelectorAll('.example-btn').forEach(btn => {
+            document.querySelectorAll('.example-btn').forEach((btn, index) => {
                 btn.addEventListener('click', () => {
-                    const exampleName = btn.getAttribute('data-example');
+                    const exampleName = exampleNames[index];
                     editor.setValue(examples[exampleName]);
                     drawBackground();
                 });
@@ -433,6 +605,22 @@ ctx.fill();`
             editor.setOption('extraKeys', {
                 'Ctrl-Enter': function() {
                     drawBackground();
+                }
+            });
+            
+            // Instructions modal handlers
+            document.getElementById('instructions-btn').addEventListener('click', () => {
+                document.getElementById('instructions-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('close-instructions').addEventListener('click', () => {
+                document.getElementById('instructions-modal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside content
+            document.getElementById('instructions-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'instructions-modal') {
+                    document.getElementById('instructions-modal').style.display = 'none';
                 }
             });
             
